@@ -48,9 +48,9 @@ public class ScheduleService {
 
     @Transactional
     public ScheduleResponseDto updateSchedule(Long id, ScheduleUpdateRequestDto requestDto) {
-        Schedule schedule = scheduleRepository.findByIdOrElseThrow(id);
+        Schedule findSchedule = scheduleRepository.findByIdOrElseThrow(id);
 
-        schedule.updateSchedule(requestDto.getTitle(), requestDto.getContents());
+        findSchedule.updateSchedule(requestDto.getTitle(), requestDto.getContents());
 
         Schedule updatedSchedule = scheduleRepository.findByIdOrElseThrow(id);
 
@@ -58,8 +58,8 @@ public class ScheduleService {
     }
 
     public void deleteSchedule(Long id) {
-        Schedule schedule = scheduleRepository.findByIdOrElseThrow(id);
+        Schedule findSchedule = scheduleRepository.findByIdOrElseThrow(id);
 
-        scheduleRepository.delete(schedule);
+        scheduleRepository.delete(findSchedule);
     }
 }
