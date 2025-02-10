@@ -1,5 +1,6 @@
 package com.example.schedule.dto.member;
 
+import com.example.schedule.entity.Member;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -24,5 +25,15 @@ public class MemberResponseDto {
         this.email = email;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public static MemberResponseDto toDto(Member member) {
+        return new MemberResponseDto(
+                member.getId(),
+                member.getName(),
+                member.getEmail(),
+                member.getCreatedAt(),
+                member.getUpdatedAt()
+        );
     }
 }
