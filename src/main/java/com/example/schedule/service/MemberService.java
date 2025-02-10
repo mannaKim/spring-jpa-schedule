@@ -54,4 +54,10 @@ public class MemberService {
 
         return MemberResponseDto.toDto(updatedMember);
     }
+
+    public void deleteMember(Long id) {
+        Member member = memberRepository.findByIdOrElseThrow(id);
+
+        memberRepository.delete(member);
+    }
 }
