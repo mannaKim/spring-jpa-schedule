@@ -1,9 +1,6 @@
 package com.example.schedule.controller;
 
-import com.example.schedule.dto.member.MemberResponseDto;
-import com.example.schedule.dto.member.MemberUpdateRequestDto;
-import com.example.schedule.dto.member.SignUpRequestDto;
-import com.example.schedule.dto.member.SignUpResponseDto;
+import com.example.schedule.dto.member.*;
 import com.example.schedule.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,7 +18,9 @@ public class MemberController {
 
     @PostMapping("/sign-up")
     public ResponseEntity<SignUpResponseDto> signUp(@RequestBody SignUpRequestDto requestDto) {
-        SignUpResponseDto signUpResponseDto = memberService.signUp(requestDto.getName(), requestDto.getEmail());
+        SignUpResponseDto signUpResponseDto = memberService.signUp(
+                requestDto.getName(), requestDto.getEmail(), requestDto.getPassword()
+        );
 
         return new ResponseEntity<>(signUpResponseDto, HttpStatus.OK);
     }
@@ -50,11 +49,20 @@ public class MemberController {
         return new ResponseEntity<>(memberResponseDto, HttpStatus.OK);
     }
 
+    @PatchMapping("/{id}/password")
+    public ResponseEntity<Void> updatePassword(
+            @PathVariable Long id,
+            @RequestBody MemberPasswordRequestDto requestDto
+    ) {
+        memberService.updatePassword(id, requestDto.getOldPassword(), requestDto.getNewPassword());
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMember(@PathVariable Long id) {
         memberService.deleteMember(id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
 }

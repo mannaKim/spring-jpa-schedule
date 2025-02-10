@@ -5,11 +5,9 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class SignUpRequestDto {
+public class MemberPasswordRequestDto {
 
-    private final String name;
+    private final String oldPassword;
 
-    private final String email;
-
-    private final String password;
+    private final String newPassword;
 }
