@@ -2,6 +2,7 @@ package com.example.schedule.service;
 
 import com.example.schedule.dto.member.MemberResponseDto;
 import com.example.schedule.dto.member.MemberUpdateRequestDto;
+import com.example.schedule.dto.member.SignUpResponseDto;
 import com.example.schedule.entity.Member;
 import com.example.schedule.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,17 +17,15 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
-    public MemberResponseDto signUp(String name, String email) {
+    public SignUpResponseDto signUp(String name, String email) {
         Member member = new Member(name, email);
 
         Member savedMember = memberRepository.save(member);
 
-        return new MemberResponseDto(
+        return new SignUpResponseDto(
                 savedMember.getId(),
                 savedMember.getName(),
-                savedMember.getEmail(),
-                savedMember.getCreatedAt(),
-                savedMember.getUpdatedAt()
+                savedMember.getEmail()
         );
     }
 

@@ -1,12 +1,15 @@
 package com.example.schedule.dto.member;
 
 import com.example.schedule.entity.Member;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 @Getter
+@AllArgsConstructor
 public class MemberResponseDto {
+
     private final Long id;
 
     private final String name;
@@ -18,14 +21,6 @@ public class MemberResponseDto {
     private final LocalDateTime createdAt;
 
     private final LocalDateTime updatedAt;
-
-    public MemberResponseDto(Long id, String name, String email, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
 
     public static MemberResponseDto toDto(Member member) {
         return new MemberResponseDto(
