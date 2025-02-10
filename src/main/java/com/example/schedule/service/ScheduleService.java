@@ -2,7 +2,10 @@ package com.example.schedule.service;
 
 import com.example.schedule.dto.schedule.ScheduleResponseDto;
 import com.example.schedule.dto.schedule.ScheduleUpdateRequestDto;
+import com.example.schedule.dto.schedule.ScheduleWithMemberResponseDto;
+import com.example.schedule.entity.Member;
 import com.example.schedule.entity.Schedule;
+import com.example.schedule.repository.MemberRepository;
 import com.example.schedule.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,35 +18,32 @@ import java.util.List;
 public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
+    private final MemberRepository memberRepository;
 
-    public ScheduleResponseDto createSchedule(String title, String contents) {
+    public ScheduleResponseDto createSchedule(String title, String contents, Long memberId) {
+
+        Member findMember = memberRepository.findByIdOrElseThrow(memberId);
+
         Schedule schedule = new Schedule(title, contents);
+        schedule.setMember(findMember);
 
         Schedule savedSchedule = scheduleRepository.save(schedule);
 
-        return new ScheduleResponseDto(
-                savedSchedule.getId(),
-                savedSchedule.getTitle(),
-                savedSchedule.getContents(),
-                savedSchedule.getCreatedAt(),
-                savedSchedule.getUpdatedAt()
-        );
+        return ScheduleResponseDto.toDto(savedSchedule);
     }
 
-    @Transactional(readOnly = true)
-    public List<ScheduleResponseDto> getSchedules() {
+    public List<ScheduleWithMemberResponseDto> getSchedules() {
 
         return scheduleRepository.findAll()
                 .stream()
-                .map(ScheduleResponseDto::toDto)
+                .map(ScheduleWithMemberResponseDto::toDto)
                 .toList();
     }
 
-    @Transactional(readOnly = true)
-    public ScheduleResponseDto getScheduleById(Long id) {
+    public ScheduleWithMemberResponseDto getScheduleById(Long id) {
         Schedule findSchedule = scheduleRepository.findByIdOrElseThrow(id);
 
-        return ScheduleResponseDto.toDto(findSchedule);
+        return ScheduleWithMemberResponseDto.toDto(findSchedule);
     }
 
     @Transactional

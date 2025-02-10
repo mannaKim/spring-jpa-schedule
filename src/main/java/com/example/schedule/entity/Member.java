@@ -1,7 +1,9 @@
 package com.example.schedule.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
+@Getter
 @Entity
 @Table(name = "member")
 public class Member extends BaseEntity {
@@ -13,5 +15,18 @@ public class Member extends BaseEntity {
 
     private String email;
 
-    private String password;
+    //private String password;
+
+    public Member() {
+    }
+
+    public Member(String name, String email) {
+        this.name = name;
+        this.email = email;
+    }
+
+    public void updateMember(String name, String email) {
+        this.name = name;
+        this.email = email;
+    }
 }
