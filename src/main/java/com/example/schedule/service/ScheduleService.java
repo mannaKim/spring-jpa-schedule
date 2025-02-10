@@ -1,10 +1,12 @@
 package com.example.schedule.service;
 
 import com.example.schedule.dto.schedule.ScheduleResponseDto;
+import com.example.schedule.dto.schedule.ScheduleUpdateRequestDto;
 import com.example.schedule.entity.Schedule;
 import com.example.schedule.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -14,8 +16,7 @@ public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
 
-    public ScheduleResponseDto createSchdule(String title, String contents) {
-
+    public ScheduleResponseDto createSchedule(String title, String contents) {
         Schedule schedule = new Schedule(title, contents);
 
         Schedule savedSchedule = scheduleRepository.save(schedule);
@@ -29,6 +30,7 @@ public class ScheduleService {
         );
     }
 
+    @Transactional(readOnly = true)
     public List<ScheduleResponseDto> getSchedules() {
 
         return scheduleRepository.findAll()
@@ -37,10 +39,21 @@ public class ScheduleService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public ScheduleResponseDto getScheduleById(Long id) {
-
         Schedule findSchedule = scheduleRepository.findByIdOrElseThrow(id);
 
         return ScheduleResponseDto.toDto(findSchedule);
+    }
+
+    @Transactional
+    public ScheduleResponseDto updateSchedule(Long id, ScheduleUpdateRequestDto requestDto) {
+        Schedule schedule = scheduleRepository.findByIdOrElseThrow(id);
+
+        schedule.updateSchedule(requestDto.getTitle(), requestDto.getContents());
+
+        Schedule updatedSchedule = scheduleRepository.findByIdOrElseThrow(id);
+
+        return ScheduleResponseDto.toDto(updatedSchedule);
     }
 }
