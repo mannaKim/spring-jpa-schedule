@@ -16,8 +16,6 @@ public class MemberResponseDto {
 
     private final String email;
 
-    //private final String password;
-
     private final LocalDateTime createdAt;
 
     private final LocalDateTime updatedAt;
