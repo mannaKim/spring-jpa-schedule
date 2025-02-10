@@ -30,7 +30,6 @@ public class ScheduleService {
         );
     }
 
-    @Transactional(readOnly = true)
     public List<ScheduleResponseDto> getSchedules() {
 
         return scheduleRepository.findAll()
@@ -39,7 +38,6 @@ public class ScheduleService {
                 .toList();
     }
 
-    @Transactional(readOnly = true)
     public ScheduleResponseDto getScheduleById(Long id) {
         Schedule findSchedule = scheduleRepository.findByIdOrElseThrow(id);
 

@@ -1,10 +1,12 @@
 package com.example.schedule.service;
 
 import com.example.schedule.dto.member.MemberResponseDto;
+import com.example.schedule.dto.member.MemberUpdateRequestDto;
 import com.example.schedule.entity.Member;
 import com.example.schedule.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -40,5 +42,16 @@ public class MemberService {
         Member findMember = memberRepository.findByIdOrElseThrow(id);
 
         return MemberResponseDto.toDto(findMember);
+    }
+
+    @Transactional
+    public MemberResponseDto updateMember(Long id, MemberUpdateRequestDto requestDto) {
+        Member member = memberRepository.findByIdOrElseThrow(id);
+
+        member.updateMember(requestDto.getName(), requestDto.getEmail());
+
+        Member updatedMember = memberRepository.findByIdOrElseThrow(id);
+
+        return MemberResponseDto.toDto(updatedMember);
     }
 }

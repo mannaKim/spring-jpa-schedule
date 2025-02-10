@@ -1,6 +1,7 @@
 package com.example.schedule.controller;
 
 import com.example.schedule.dto.member.MemberResponseDto;
+import com.example.schedule.dto.member.MemberUpdateRequestDto;
 import com.example.schedule.dto.member.SignUpRequestDto;
 import com.example.schedule.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -40,4 +41,16 @@ public class MemberController {
 
         return new ResponseEntity<>(memberResponseDto, HttpStatus.OK);
     }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<MemberResponseDto> updateMember(
+            @PathVariable Long id,
+            @RequestBody MemberUpdateRequestDto requestDto
+    ) {
+
+        MemberResponseDto memberResponseDto = memberService.updateMember(id, requestDto);
+
+        return new ResponseEntity<>(memberResponseDto, HttpStatus.OK);
+    }
+
 }
