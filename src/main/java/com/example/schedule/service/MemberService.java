@@ -20,8 +20,10 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     public SignUpResponseDto signUp(String name, String email, String password) {
+        if (memberRepository.existsByEmail(email)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "이미 존재하는 이메일입니다.");
+        }
         Member member = new Member(name, email, password);
-
         Member savedMember = memberRepository.save(member);
 
         return new SignUpResponseDto(

@@ -18,4 +18,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
         return findMemberByEmail(email).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Does not exist email = " + email));
     }
+
+    boolean existsByEmail(String email);
 }
