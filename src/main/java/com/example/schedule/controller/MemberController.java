@@ -2,6 +2,7 @@ package com.example.schedule.controller;
 
 import com.example.schedule.dto.member.*;
 import com.example.schedule.service.MemberService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/sign-up")
-    public ResponseEntity<SignUpResponseDto> signUp(@RequestBody SignUpRequestDto requestDto) {
+    public ResponseEntity<SignUpResponseDto> signUp(@Valid @RequestBody SignUpRequestDto requestDto) {
         SignUpResponseDto signUpResponseDto = memberService.signUp(
                 requestDto.getName(), requestDto.getEmail(), requestDto.getPassword()
         );
@@ -52,7 +53,7 @@ public class MemberController {
     @PatchMapping("/{id}/password")
     public ResponseEntity<Void> updatePassword(
             @PathVariable Long id,
-            @RequestBody MemberPasswordRequestDto requestDto
+            @Valid @RequestBody MemberPasswordRequestDto requestDto
     ) {
         memberService.updatePassword(id, requestDto.getOldPassword(), requestDto.getNewPassword());
 
