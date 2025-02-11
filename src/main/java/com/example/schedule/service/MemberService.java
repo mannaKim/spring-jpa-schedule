@@ -4,12 +4,12 @@ import com.example.schedule.dto.member.MemberResponseDto;
 import com.example.schedule.dto.member.MemberUpdateRequestDto;
 import com.example.schedule.dto.member.SignUpResponseDto;
 import com.example.schedule.entity.Member;
+import com.example.schedule.exception.custom.DuplicateEmailException;
+import com.example.schedule.exception.custom.InvalidPasswordException;
 import com.example.schedule.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ public class MemberService {
 
     public SignUpResponseDto signUp(String name, String email, String password) {
         if (memberRepository.existsByEmail(email)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "이미 존재하는 이메일입니다.");
+            throw new DuplicateEmailException(email);
         }
         Member member = new Member(name, email, password);
         Member savedMember = memberRepository.save(member);
@@ -68,7 +68,7 @@ public class MemberService {
         Member findMember = memberRepository.findByIdOrElseThrow(id);
 
         if(!findMember.getPassword().equals(oldPassword)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
+            throw new InvalidPasswordException();
         }
 
         findMember.updatePassword(newPassword);
