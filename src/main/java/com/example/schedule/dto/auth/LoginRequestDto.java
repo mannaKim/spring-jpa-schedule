@@ -7,9 +7,9 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class LoginRequestDto {
-    @NotBlank(message = "Required input is missing: Email")
+    @NotBlank
     private String email;
 
-    @NotBlank(message = "Required input is missing: Password")
+    @NotBlank
     private String password;
 }
