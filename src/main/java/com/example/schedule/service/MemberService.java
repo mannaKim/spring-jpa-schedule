@@ -7,7 +7,6 @@ import com.example.schedule.dto.member.SignUpResponseDto;
 import com.example.schedule.entity.Member;
 import com.example.schedule.exception.custom.DuplicateEmailException;
 import com.example.schedule.exception.custom.InvalidPasswordException;
-import com.example.schedule.exception.custom.UnauthorizedException;
 import com.example.schedule.repository.MemberRepository;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -52,41 +51,34 @@ public class MemberService {
     }
 
     @Transactional
-    public MemberResponseDto updateMember(Long id, MemberUpdateRequestDto requestDto, HttpSession session) {
+    public MemberResponseDto updateMember(MemberUpdateRequestDto requestDto, HttpSession session) {
         Long loggedInMemberId = authService.getLoggedInMemberId(session);
-        if (!loggedInMemberId.equals(id)) {
-            throw new UnauthorizedException("본인만 수정할 수 있습니다.");
-        }
-
-        Member findMember = memberRepository.findByIdOrElseThrow(id);
+        Member findMember = memberRepository.findByIdOrElseThrow(loggedInMemberId);
         if (!passwordEncoder.matches(requestDto.getPassword(), findMember.getPassword())) {
             throw new InvalidPasswordException();
         }
 
         findMember.updateMember(requestDto.getName());
-        Member updatedMember = memberRepository.findByIdOrElseThrow(id);
+        Member updatedMember = memberRepository.findByIdOrElseThrow(loggedInMemberId);
         return MemberResponseDto.toDto(updatedMember);
     }
 
-    public void deleteMember(Long id, HttpSession session) {
+    public void deleteMember(HttpSession session) {
         Long loggedInMemberId = authService.getLoggedInMemberId(session);
-        if (!loggedInMemberId.equals(id)) {
-            throw new UnauthorizedException("본인만 삭제할 수 있습니다.");
-        }
-        Member findMember = memberRepository.findByIdOrElseThrow(id);
+        Member findMember = memberRepository.findByIdOrElseThrow(loggedInMemberId);
         memberRepository.delete(findMember);
+
+        authService.logout(session);
     }
 
-    public void updatePassword(Long id, String oldPassword, String newPassword, HttpSession session) {
+    @Transactional
+    public void updatePassword(String oldPassword, String newPassword, HttpSession session) {
         Long loggedInMemberId = authService.getLoggedInMemberId(session);
-        if (!loggedInMemberId.equals(id)) {
-            throw new UnauthorizedException("본인만 수정할 수 있습니다.");
-        }
-
-        Member findMember = memberRepository.findByIdOrElseThrow(id);
+        Member findMember = memberRepository.findByIdOrElseThrow(loggedInMemberId);
         if (!passwordEncoder.matches(oldPassword, findMember.getPassword())) {
             throw new InvalidPasswordException();
         }
-        findMember.updatePassword(newPassword);
+        String encodePassword = passwordEncoder.encode(newPassword);
+        findMember.updatePassword(encodePassword);
     }
 }
