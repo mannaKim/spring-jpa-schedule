@@ -14,8 +14,5 @@ public class CommnetCreateRequestDto {
     private final String contents;
 
     @NotNull
-    private final Long memberId;
-
-    @NotNull
     private final Long scheduleId;
 }

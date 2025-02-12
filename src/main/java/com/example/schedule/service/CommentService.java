@@ -25,8 +25,9 @@ public class CommentService {
     private final ScheduleRepository scheduleRepository;
     private final AuthService authService;
 
-    public CommentResponseDto createComment(String contents, Long memberId, Long scheduleId) {
-        Member findMember = memberRepository.findByIdOrElseThrow(memberId);
+    public CommentResponseDto createComment(String contents, Long scheduleId, HttpSession session) {
+        Long loggedInMemberId = authService.getLoggedInMemberId(session);
+        Member findMember = memberRepository.findByIdOrElseThrow(loggedInMemberId);
         Schedule findSchedule = scheduleRepository.findByIdOrElseThrow(scheduleId);
 
         Comment comment = new Comment(contents);

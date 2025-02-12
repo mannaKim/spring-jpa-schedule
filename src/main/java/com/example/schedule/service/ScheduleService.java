@@ -23,9 +23,9 @@ public class ScheduleService {
     private final MemberRepository memberRepository;
     private final AuthService authService;
 
-    public ScheduleResponseDto createSchedule(String title, String contents, Long memberId) {
-
-        Member findMember = memberRepository.findByIdOrElseThrow(memberId);
+    public ScheduleResponseDto createSchedule(String title, String contents, HttpSession session) {
+        Long loggedInMemberId = authService.getLoggedInMemberId(session);
+        Member findMember = memberRepository.findByIdOrElseThrow(loggedInMemberId);
 
         Schedule schedule = new Schedule(title, contents);
         schedule.setMember(findMember);

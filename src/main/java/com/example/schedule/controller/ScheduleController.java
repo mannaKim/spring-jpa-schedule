@@ -26,11 +26,14 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
 
     @PostMapping
-    public ResponseEntity<ScheduleResponseDto> createSchedule(@Valid @RequestBody ScheduleCreateRequestDto requestDto) {
+    public ResponseEntity<ScheduleResponseDto> createSchedule(
+            @Valid @RequestBody ScheduleCreateRequestDto requestDto,
+            HttpSession session
+    ) {
         ScheduleResponseDto scheduleResponseDto = scheduleService.createSchedule(
                 requestDto.getTitle(),
                 requestDto.getContents(),
-                requestDto.getMemberId()
+                session
         );
 
         return new ResponseEntity<>(scheduleResponseDto, HttpStatus.CREATED);

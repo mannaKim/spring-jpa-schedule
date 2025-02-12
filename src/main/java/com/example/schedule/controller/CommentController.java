@@ -25,11 +25,14 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping
-    public ResponseEntity<CommentResponseDto> createComment(@Valid @RequestBody CommnetCreateRequestDto requestDto) {
+    public ResponseEntity<CommentResponseDto> createComment(
+            @Valid @RequestBody CommnetCreateRequestDto requestDto,
+            HttpSession session
+    ) {
         CommentResponseDto commentResponseDto = commentService.createComment(
                 requestDto.getContents(),
-                requestDto.getMemberId(),
-                requestDto.getScheduleId()
+                requestDto.getScheduleId(),
+                session
         );
         return new ResponseEntity<>(commentResponseDto, HttpStatus.CREATED);
     }
