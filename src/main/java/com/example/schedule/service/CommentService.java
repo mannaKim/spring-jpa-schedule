@@ -1,5 +1,6 @@
 package com.example.schedule.service;
 
+import com.example.schedule.dto.comment.CommentDetailResponseDto;
 import com.example.schedule.dto.comment.CommentResponseDto;
 import com.example.schedule.entity.Comment;
 import com.example.schedule.entity.Member;
@@ -9,6 +10,8 @@ import com.example.schedule.repository.MemberRepository;
 import com.example.schedule.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -28,5 +31,19 @@ public class CommentService {
 
         Comment savedComment = commentRepository.save(comment);
         return CommentResponseDto.toDto(savedComment);
+    }
+
+    public List<CommentDetailResponseDto> getComments() {
+
+        return commentRepository.findAll()
+                .stream()
+                .map(CommentDetailResponseDto::toDto)
+                .toList();
+    }
+
+    public CommentDetailResponseDto getCommentById(Long id) {
+        Comment findComment = commentRepository.findByIdOrElseThrow(id);
+
+        return CommentDetailResponseDto.toDto(findComment);
     }
 }

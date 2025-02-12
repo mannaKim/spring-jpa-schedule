@@ -13,7 +13,9 @@ public enum ErrorCode {
 
     DUPLICATE_EMAIL(HttpStatus.CONFLICT, "이미 존재하는 이메일입니다."),
 
-    SCHEDULE_NOT_FOUND_BY_ID(HttpStatus.NOT_FOUND, "해당 ID의 일정을 찾을 수 없습니다.");
+    SCHEDULE_NOT_FOUND_BY_ID(HttpStatus.NOT_FOUND, "해당 ID의 일정을 찾을 수 없습니다."),
+
+    COMMENT_NOT_FOUND_BY_ID(HttpStatus.NOT_FOUND, "해당 ID의 댓글을 찾을 수 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
