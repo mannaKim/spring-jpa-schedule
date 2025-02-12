@@ -4,14 +4,17 @@ import com.example.schedule.dto.comment.CommentDetailResponseDto;
 import com.example.schedule.dto.comment.CommentResponseDto;
 import com.example.schedule.dto.comment.CommentUpdateRequestDto;
 import com.example.schedule.dto.comment.CommnetCreateRequestDto;
+import com.example.schedule.dto.common.PaginationResponse;
 import com.example.schedule.service.CommentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/comments")
@@ -31,10 +34,12 @@ public class CommentController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CommentDetailResponseDto>> getComments(){
-        List<CommentDetailResponseDto> commentDetailResponseDtoList = commentService.getComments();
-
-        return new ResponseEntity<>(commentDetailResponseDtoList, HttpStatus.OK);
+    public ResponseEntity<PaginationResponse<CommentDetailResponseDto>> getComments(
+            @PageableDefault(size = 10, page = 0, sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable
+    ){
+        Page<CommentDetailResponseDto> commentPage = commentService.getComments(pageable);
+        PaginationResponse<CommentDetailResponseDto> commentPageResponse = new PaginationResponse<>(commentPage);
+        return new ResponseEntity<>(commentPageResponse, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
