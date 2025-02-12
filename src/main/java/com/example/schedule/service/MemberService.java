@@ -1,5 +1,6 @@
 package com.example.schedule.service;
 
+import com.example.schedule.config.PasswordEncoder;
 import com.example.schedule.dto.member.MemberResponseDto;
 import com.example.schedule.dto.member.MemberUpdateRequestDto;
 import com.example.schedule.dto.member.SignUpResponseDto;
@@ -18,14 +19,16 @@ import java.util.List;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public SignUpResponseDto signUp(String name, String email, String password) {
         if (memberRepository.existsByEmail(email)) {
             throw new DuplicateEmailException(email);
         }
-        Member member = new Member(name, email, password);
-        Member savedMember = memberRepository.save(member);
+        String encodePassword = passwordEncoder.encode(password);
+        Member member = new Member(name, email, encodePassword);
 
+        Member savedMember = memberRepository.save(member);
         return new SignUpResponseDto(
                 savedMember.getId(),
                 savedMember.getName(),
