@@ -10,6 +10,7 @@ import com.example.schedule.repository.MemberRepository;
 import com.example.schedule.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -45,5 +46,22 @@ public class CommentService {
         Comment findComment = commentRepository.findByIdOrElseThrow(id);
 
         return CommentDetailResponseDto.toDto(findComment);
+    }
+
+    @Transactional
+    public CommentResponseDto updateComment(Long id, String contents) {
+        Comment findComment = commentRepository.findByIdOrElseThrow(id);
+
+        findComment.updateComment(contents);
+
+        Comment updatedComment = commentRepository.findByIdOrElseThrow(id);
+
+        return CommentResponseDto.toDto(updatedComment);
+    }
+
+    public void deleteComment(Long id) {
+        Comment findComment = commentRepository.findByIdOrElseThrow(id);
+
+        commentRepository.delete(findComment);
     }
 }
