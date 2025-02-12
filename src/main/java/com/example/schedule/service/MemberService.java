@@ -9,10 +9,10 @@ import com.example.schedule.exception.custom.DuplicateEmailException;
 import com.example.schedule.exception.custom.InvalidPasswordException;
 import com.example.schedule.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -36,12 +36,10 @@ public class MemberService {
         );
     }
 
-    public List<MemberResponseDto> getMembers() {
+    public Page<MemberResponseDto> getMembers(Pageable pageable) {
 
-        return memberRepository.findAll()
-                .stream()
-                .map(MemberResponseDto::toDto)
-                .toList();
+        return memberRepository.findAll(pageable)
+                .map(MemberResponseDto::toDto);
     }
 
     public MemberResponseDto getMemberById(Long id) {

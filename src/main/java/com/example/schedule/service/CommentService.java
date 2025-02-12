@@ -9,10 +9,10 @@ import com.example.schedule.repository.CommentRepository;
 import com.example.schedule.repository.MemberRepository;
 import com.example.schedule.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -34,12 +34,10 @@ public class CommentService {
         return CommentResponseDto.toDto(savedComment);
     }
 
-    public List<CommentDetailResponseDto> getComments() {
+    public Page<CommentDetailResponseDto> getComments(Pageable pageable) {
 
-        return commentRepository.findAll()
-                .stream()
-                .map(CommentDetailResponseDto::toDto)
-                .toList();
+        return commentRepository.findAll(pageable)
+                .map(CommentDetailResponseDto::toDto);
     }
 
     public CommentDetailResponseDto getCommentById(Long id) {

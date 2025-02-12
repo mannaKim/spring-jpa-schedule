@@ -1,14 +1,17 @@
 package com.example.schedule.controller;
 
+import com.example.schedule.dto.common.PaginationResponse;
 import com.example.schedule.dto.member.*;
 import com.example.schedule.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/members")
@@ -27,10 +30,12 @@ public class MemberController {
     }
 
     @GetMapping
-    public ResponseEntity<List<MemberResponseDto>> getMembers() {
-        List<MemberResponseDto> memberResponseDtoList = memberService.getMembers();
-
-        return new ResponseEntity<>(memberResponseDtoList, HttpStatus.OK);
+    public ResponseEntity<PaginationResponse<MemberResponseDto>> getMembers(
+            @PageableDefault(size = 10, page = 0, sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        Page<MemberResponseDto> memberPage = memberService.getMembers(pageable);
+        PaginationResponse<MemberResponseDto> memberPageResponse = new PaginationResponse<>(memberPage);
+        return new ResponseEntity<>(memberPageResponse, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
