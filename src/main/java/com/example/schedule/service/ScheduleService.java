@@ -2,7 +2,7 @@ package com.example.schedule.service;
 
 import com.example.schedule.dto.schedule.ScheduleResponseDto;
 import com.example.schedule.dto.schedule.ScheduleUpdateRequestDto;
-import com.example.schedule.dto.schedule.ScheduleWithMemberResponseDto;
+import com.example.schedule.dto.schedule.ScheduleDetailResponseDto;
 import com.example.schedule.entity.Member;
 import com.example.schedule.entity.Schedule;
 import com.example.schedule.repository.MemberRepository;
@@ -32,16 +32,13 @@ public class ScheduleService {
         return ScheduleResponseDto.toDto(savedSchedule);
     }
 
-    public Page<ScheduleWithMemberResponseDto> getSchedules(Pageable pageable) {
+    public Page<ScheduleDetailResponseDto> getSchedules(Pageable pageable) {
 
-        return scheduleRepository.findAll(pageable)
-                .map(ScheduleWithMemberResponseDto::toDto);
+        return scheduleRepository.findAllWithCommentCount(pageable);
     }
 
-    public ScheduleWithMemberResponseDto getScheduleById(Long id) {
-        Schedule findSchedule = scheduleRepository.findByIdOrElseThrow(id);
-
-        return ScheduleWithMemberResponseDto.toDto(findSchedule);
+    public ScheduleDetailResponseDto getScheduleById(Long id) {
+        return scheduleRepository.findByIdWithCommentCountOrElseThrow(id);
     }
 
     @Transactional

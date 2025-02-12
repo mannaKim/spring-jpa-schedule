@@ -2,14 +2,15 @@ package com.example.schedule.controller;
 
 import com.example.schedule.dto.common.PaginationResponse;
 import com.example.schedule.dto.schedule.ScheduleCreateRequestDto;
+import com.example.schedule.dto.schedule.ScheduleDetailResponseDto;
 import com.example.schedule.dto.schedule.ScheduleResponseDto;
 import com.example.schedule.dto.schedule.ScheduleUpdateRequestDto;
-import com.example.schedule.dto.schedule.ScheduleWithMemberResponseDto;
 import com.example.schedule.service.ScheduleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,19 +36,19 @@ public class ScheduleController {
     }
 
     @GetMapping
-    public ResponseEntity<PaginationResponse<ScheduleWithMemberResponseDto>> getSchedules(
-            @PageableDefault(size = 10, page = 0) Pageable pageable
+    public ResponseEntity<PaginationResponse<ScheduleDetailResponseDto>> getSchedules(
+            @PageableDefault(size = 10, page = 0, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        Page<ScheduleWithMemberResponseDto> schedules = scheduleService.getSchedules(pageable);
-        PaginationResponse<ScheduleWithMemberResponseDto> schedulePage = new PaginationResponse<>(schedules);
-        return new ResponseEntity<>(schedulePage, HttpStatus.OK);
+        Page<ScheduleDetailResponseDto> schedulePage = scheduleService.getSchedules(pageable);
+        PaginationResponse<ScheduleDetailResponseDto> schedulePageResponse = new PaginationResponse<>(schedulePage);
+        return new ResponseEntity<>(schedulePageResponse, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ScheduleWithMemberResponseDto> getScheduleById(@PathVariable Long id) {
-        ScheduleWithMemberResponseDto scheduleWithMemberResponseDto = scheduleService.getScheduleById(id);
+    public ResponseEntity<ScheduleDetailResponseDto> getScheduleById(@PathVariable Long id) {
+        ScheduleDetailResponseDto scheduleDetailResponseDto = scheduleService.getScheduleById(id);
 
-        return new ResponseEntity<>(scheduleWithMemberResponseDto, HttpStatus.OK);
+        return new ResponseEntity<>(scheduleDetailResponseDto, HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
