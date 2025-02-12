@@ -46,9 +46,9 @@ public class ScheduleService {
 
     @Transactional
     public ScheduleResponseDto updateSchedule(Long id, ScheduleUpdateRequestDto requestDto, HttpSession session) {
-        Long memberId = authService.getLoggedInMemberId(session);
+        Long loggedInMemberId = authService.getLoggedInMemberId(session);
         Schedule findSchedule = scheduleRepository.findByIdOrElseThrow(id);
-        if (!findSchedule.getMember().getId().equals(memberId)) {
+        if (!findSchedule.getMember().getId().equals(loggedInMemberId)) {
             throw new UnauthorizedException("본인이 작성한 일정만 수정할 수 있습니다.");
         }
 
@@ -58,12 +58,11 @@ public class ScheduleService {
     }
 
     public void deleteSchedule(Long id, HttpSession session) {
-        Long memberId = authService.getLoggedInMemberId(session);
+        Long loggedInMemberId = authService.getLoggedInMemberId(session);
         Schedule findSchedule = scheduleRepository.findByIdOrElseThrow(id);
-        if (!findSchedule.getMember().getId().equals(memberId)) {
+        if (!findSchedule.getMember().getId().equals(loggedInMemberId)) {
             throw new UnauthorizedException("본인이 작성한 일정만 삭제할 수 있습니다.");
         }
-        
         scheduleRepository.delete(findSchedule);
     }
 }
