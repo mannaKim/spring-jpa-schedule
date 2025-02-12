@@ -32,9 +32,9 @@ public class ScheduleService {
         return ScheduleResponseDto.toDto(savedSchedule);
     }
 
-    public Page<ScheduleDetailResponseDto> getSchedules(Pageable pageable) {
+    public Page<ScheduleDetailResponseDto> getSchedules(String title, String name, String updatedAt, Pageable pageable) {
 
-        return scheduleRepository.findAllWithCommentCount(pageable);
+        return scheduleRepository.findAllWithCommentCount(title, name, updatedAt, pageable);
     }
 
     public ScheduleDetailResponseDto getScheduleById(Long id) {

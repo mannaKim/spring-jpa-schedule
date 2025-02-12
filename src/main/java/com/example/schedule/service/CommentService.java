@@ -34,10 +34,9 @@ public class CommentService {
         return CommentResponseDto.toDto(savedComment);
     }
 
-    public Page<CommentDetailResponseDto> getComments(Pageable pageable) {
+    public Page<CommentDetailResponseDto> getComments(String title, String name, Pageable pageable) {
 
-        return commentRepository.findAll(pageable)
-                .map(CommentDetailResponseDto::toDto);
+        return commentRepository.findComments(title, name, pageable);
     }
 
     public CommentDetailResponseDto getCommentById(Long id) {
