@@ -1,4 +1,4 @@
-package com.example.schedule.dto.schedule;
+package com.example.schedule.dto.comment;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -8,15 +8,14 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class ScheduleCreateRequestDto {
+public class CommnetCreateRequestDto {
     @NotBlank
-    @Size(max = 100)
-    private final String title;
-
-    @NotBlank
-    @Size(max = 500)
+    @Size(max = 200)
     private final String contents;
 
     @NotNull
     private final Long memberId;
+
+    @NotNull
+    private final Long scheduleId;
 }
