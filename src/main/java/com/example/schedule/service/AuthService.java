@@ -5,6 +5,7 @@ import com.example.schedule.config.PasswordEncoder;
 import com.example.schedule.dto.auth.LoginResponseDto;
 import com.example.schedule.entity.Member;
 import com.example.schedule.exception.custom.InvalidPasswordException;
+import com.example.schedule.exception.custom.UnauthenticatedException;
 import com.example.schedule.repository.MemberRepository;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -35,5 +36,13 @@ public class AuthService {
         if(session != null) {
             session.invalidate();
         }
+    }
+
+    public Long getLoggedInMemberId(HttpSession session) {
+        Long memberId = (Long) session.getAttribute(Const.LOGIN_MEMBER);
+        if (memberId == null) {
+            throw new UnauthenticatedException();
+        }
+        return memberId;
     }
 }

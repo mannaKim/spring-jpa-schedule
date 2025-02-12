@@ -6,6 +6,7 @@ import com.example.schedule.dto.schedule.ScheduleDetailResponseDto;
 import com.example.schedule.dto.schedule.ScheduleResponseDto;
 import com.example.schedule.dto.schedule.ScheduleUpdateRequestDto;
 import com.example.schedule.service.ScheduleService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,11 +26,14 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
 
     @PostMapping
-    public ResponseEntity<ScheduleResponseDto> createSchedule(@Valid @RequestBody ScheduleCreateRequestDto requestDto) {
+    public ResponseEntity<ScheduleResponseDto> createSchedule(
+            @Valid @RequestBody ScheduleCreateRequestDto requestDto,
+            HttpSession session
+    ) {
         ScheduleResponseDto scheduleResponseDto = scheduleService.createSchedule(
                 requestDto.getTitle(),
                 requestDto.getContents(),
-                requestDto.getMemberId()
+                session
         );
 
         return new ResponseEntity<>(scheduleResponseDto, HttpStatus.CREATED);
@@ -62,16 +66,17 @@ public class ScheduleController {
     @PatchMapping("/{id}")
     public ResponseEntity<ScheduleResponseDto> updateSchedule(
             @PathVariable Long id,
-            @RequestBody ScheduleUpdateRequestDto requestDto
+            @RequestBody ScheduleUpdateRequestDto requestDto,
+            HttpSession session
     ) {
-        ScheduleResponseDto scheduleResponseDto = scheduleService.updateSchedule(id, requestDto);
+        ScheduleResponseDto scheduleResponseDto = scheduleService.updateSchedule(id, requestDto, session);
 
         return new ResponseEntity<>(scheduleResponseDto, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSchedule(@PathVariable Long id) {
-        scheduleService.deleteSchedule(id);
+    public ResponseEntity<Void> deleteSchedule(@PathVariable Long id, HttpSession session) {
+        scheduleService.deleteSchedule(id, session);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

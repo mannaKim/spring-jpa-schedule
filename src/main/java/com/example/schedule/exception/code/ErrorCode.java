@@ -15,7 +15,11 @@ public enum ErrorCode {
 
     SCHEDULE_NOT_FOUND_BY_ID(HttpStatus.NOT_FOUND, "해당 ID의 일정을 찾을 수 없습니다."),
 
-    COMMENT_NOT_FOUND_BY_ID(HttpStatus.NOT_FOUND, "해당 ID의 댓글을 찾을 수 없습니다.");
+    COMMENT_NOT_FOUND_BY_ID(HttpStatus.NOT_FOUND, "해당 ID의 댓글을 찾을 수 없습니다."),
+
+    UNAUTHENTICATED(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다."),
+
+    UNAUTHORIZED(HttpStatus.FORBIDDEN, "이 작업을 수행할 권한이 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;

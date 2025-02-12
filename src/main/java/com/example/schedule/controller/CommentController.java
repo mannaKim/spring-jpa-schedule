@@ -6,6 +6,7 @@ import com.example.schedule.dto.comment.CommentUpdateRequestDto;
 import com.example.schedule.dto.comment.CommnetCreateRequestDto;
 import com.example.schedule.dto.common.PaginationResponse;
 import com.example.schedule.service.CommentService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,11 +25,14 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping
-    public ResponseEntity<CommentResponseDto> createComment(@Valid @RequestBody CommnetCreateRequestDto requestDto) {
+    public ResponseEntity<CommentResponseDto> createComment(
+            @Valid @RequestBody CommnetCreateRequestDto requestDto,
+            HttpSession session
+    ) {
         CommentResponseDto commentResponseDto = commentService.createComment(
                 requestDto.getContents(),
-                requestDto.getMemberId(),
-                requestDto.getScheduleId()
+                requestDto.getScheduleId(),
+                session
         );
         return new ResponseEntity<>(commentResponseDto, HttpStatus.CREATED);
     }
@@ -58,16 +62,17 @@ public class CommentController {
     @PatchMapping("/{id}")
     public ResponseEntity<CommentResponseDto> updateComment(
             @PathVariable Long id,
-            @RequestBody CommentUpdateRequestDto requestDto
+            @RequestBody CommentUpdateRequestDto requestDto,
+            HttpSession session
     ) {
-        CommentResponseDto commentResponseDto = commentService.updateComment(id, requestDto.getContents());
+        CommentResponseDto commentResponseDto = commentService.updateComment(id, requestDto.getContents(), session);
 
         return new ResponseEntity<>(commentResponseDto, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteComment(@PathVariable Long id) {
-        commentService.deleteComment(id);
+    public ResponseEntity<Void> deleteComment(@PathVariable Long id, HttpSession session) {
+        commentService.deleteComment(id, session);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
