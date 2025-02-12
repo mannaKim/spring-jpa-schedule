@@ -3,6 +3,7 @@ package com.example.schedule.controller;
 import com.example.schedule.dto.common.PaginationResponse;
 import com.example.schedule.dto.member.*;
 import com.example.schedule.service.MemberService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -48,9 +49,10 @@ public class MemberController {
     @PatchMapping("/{id}")
     public ResponseEntity<MemberResponseDto> updateMember(
             @PathVariable Long id,
-            @RequestBody MemberUpdateRequestDto requestDto
+            @Valid @RequestBody MemberUpdateRequestDto requestDto,
+            HttpSession session
     ) {
-        MemberResponseDto memberResponseDto = memberService.updateMember(id, requestDto);
+        MemberResponseDto memberResponseDto = memberService.updateMember(id, requestDto, session);
 
         return new ResponseEntity<>(memberResponseDto, HttpStatus.OK);
     }
@@ -58,16 +60,17 @@ public class MemberController {
     @PatchMapping("/{id}/password")
     public ResponseEntity<Void> updatePassword(
             @PathVariable Long id,
-            @Valid @RequestBody MemberPasswordRequestDto requestDto
+            @Valid @RequestBody MemberPasswordRequestDto requestDto,
+            HttpSession session
     ) {
-        memberService.updatePassword(id, requestDto.getOldPassword(), requestDto.getNewPassword());
+        memberService.updatePassword(id, requestDto.getOldPassword(), requestDto.getNewPassword(), session);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMember(@PathVariable Long id) {
-        memberService.deleteMember(id);
+    public ResponseEntity<Void> deleteMember(@PathVariable Long id, HttpSession session) {
+        memberService.deleteMember(id, session);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

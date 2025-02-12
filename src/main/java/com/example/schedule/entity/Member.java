@@ -3,6 +3,9 @@ package com.example.schedule.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Entity
 @Table(name = "member")
@@ -20,6 +23,12 @@ public class Member extends BaseEntity {
     @Column(nullable = false, length = 60)
     private String password;
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Schedule> schedules = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
+
     public Member() {
     }
 
@@ -29,9 +38,8 @@ public class Member extends BaseEntity {
         this.password = password;
     }
 
-    public void updateMember(String name, String email) {
+    public void updateMember(String name) {
         this.name = name;
-        this.email = email;
     }
 
     public void updatePassword(String password) {
