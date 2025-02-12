@@ -1,5 +1,6 @@
 package com.example.schedule.controller;
 
+import com.example.schedule.dto.common.PaginationResponse;
 import com.example.schedule.dto.schedule.ScheduleCreateRequestDto;
 import com.example.schedule.dto.schedule.ScheduleResponseDto;
 import com.example.schedule.dto.schedule.ScheduleUpdateRequestDto;
@@ -7,11 +8,12 @@ import com.example.schedule.dto.schedule.ScheduleWithMemberResponseDto;
 import com.example.schedule.service.ScheduleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 
 @RestController
@@ -33,10 +35,12 @@ public class ScheduleController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ScheduleWithMemberResponseDto>> getSchedules() {
-        List<ScheduleWithMemberResponseDto> scheduleWithMemberResponseDtoList = scheduleService.getSchedules();
-
-        return new ResponseEntity<>(scheduleWithMemberResponseDtoList, HttpStatus.OK);
+    public ResponseEntity<PaginationResponse<ScheduleWithMemberResponseDto>> getSchedules(
+            @PageableDefault(size = 10, page = 0) Pageable pageable
+    ) {
+        Page<ScheduleWithMemberResponseDto> schedules = scheduleService.getSchedules(pageable);
+        PaginationResponse<ScheduleWithMemberResponseDto> schedulePage = new PaginationResponse<>(schedules);
+        return new ResponseEntity<>(schedulePage, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

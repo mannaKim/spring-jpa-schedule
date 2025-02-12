@@ -8,10 +8,10 @@ import com.example.schedule.entity.Schedule;
 import com.example.schedule.repository.MemberRepository;
 import com.example.schedule.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -32,12 +32,10 @@ public class ScheduleService {
         return ScheduleResponseDto.toDto(savedSchedule);
     }
 
-    public List<ScheduleWithMemberResponseDto> getSchedules() {
+    public Page<ScheduleWithMemberResponseDto> getSchedules(Pageable pageable) {
 
-        return scheduleRepository.findAll()
-                .stream()
-                .map(ScheduleWithMemberResponseDto::toDto)
-                .toList();
+        return scheduleRepository.findAll(pageable)
+                .map(ScheduleWithMemberResponseDto::toDto);
     }
 
     public ScheduleWithMemberResponseDto getScheduleById(Long id) {
