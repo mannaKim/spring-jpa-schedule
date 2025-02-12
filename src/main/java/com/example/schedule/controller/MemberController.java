@@ -23,7 +23,7 @@ public class MemberController {
                 requestDto.getName(), requestDto.getEmail(), requestDto.getPassword()
         );
 
-        return new ResponseEntity<>(signUpResponseDto, HttpStatus.OK);
+        return new ResponseEntity<>(signUpResponseDto, HttpStatus.CREATED);
     }
 
     @GetMapping
