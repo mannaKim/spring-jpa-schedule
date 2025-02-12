@@ -35,9 +35,15 @@ public class CommentController {
 
     @GetMapping
     public ResponseEntity<PaginationResponse<CommentDetailResponseDto>> getComments(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String name,
             @PageableDefault(size = 10, page = 0, sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable
     ){
-        Page<CommentDetailResponseDto> commentPage = commentService.getComments(pageable);
+        Page<CommentDetailResponseDto> commentPage = commentService.getComments(
+                title,
+                name,
+                pageable
+        );
         PaginationResponse<CommentDetailResponseDto> commentPageResponse = new PaginationResponse<>(commentPage);
         return new ResponseEntity<>(commentPageResponse, HttpStatus.OK);
     }

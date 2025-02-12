@@ -37,9 +37,17 @@ public class ScheduleController {
 
     @GetMapping
     public ResponseEntity<PaginationResponse<ScheduleDetailResponseDto>> getSchedules(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String updatedAt,
             @PageableDefault(size = 10, page = 0, sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        Page<ScheduleDetailResponseDto> schedulePage = scheduleService.getSchedules(pageable);
+        Page<ScheduleDetailResponseDto> schedulePage = scheduleService.getSchedules(
+                title,
+                name,
+                updatedAt,
+                pageable
+        );
         PaginationResponse<ScheduleDetailResponseDto> schedulePageResponse = new PaginationResponse<>(schedulePage);
         return new ResponseEntity<>(schedulePageResponse, HttpStatus.OK);
     }

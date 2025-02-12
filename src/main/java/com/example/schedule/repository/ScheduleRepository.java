@@ -22,8 +22,16 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
             "FROM Schedule s " +
             "JOIN s.member m " +
             "LEFT JOIN Comment c ON c.schedule = s " +
+            "WHERE (:title IS NULL OR s.title LIKE %:title%) " +
+            "AND (:name IS NULL OR m.name LIKE %:name%) " +
+            "AND (:updatedAt IS NULL OR FUNCTION('DATE_FORMAT', s.updatedAt, '%Y-%m-%d') = :updatedAt) " +
             "GROUP BY s.id, s.title, s.contents, m.name, s.createdAt, s.updatedAt")
-    Page<ScheduleDetailResponseDto> findAllWithCommentCount(Pageable pageable);
+    Page<ScheduleDetailResponseDto> findAllWithCommentCount(
+            @Param("title") String title,
+            @Param("name") String name,
+            @Param("updatedAt") String updatedAt,
+            Pageable pageable
+    );
 
     @Query("SELECT new com.example.schedule.dto.schedule.ScheduleDetailResponseDto(" +
             "s.id, s.title, s.contents, m.name, COUNT(c), s.createdAt, s.updatedAt) " +
