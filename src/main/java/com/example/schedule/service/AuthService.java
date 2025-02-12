@@ -1,6 +1,7 @@
 package com.example.schedule.service;
 
 import com.example.schedule.common.Const;
+import com.example.schedule.config.PasswordEncoder;
 import com.example.schedule.dto.auth.LoginResponseDto;
 import com.example.schedule.entity.Member;
 import com.example.schedule.exception.custom.InvalidPasswordException;
@@ -14,11 +15,12 @@ import org.springframework.stereotype.Service;
 public class AuthService {
 
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public LoginResponseDto login(String email, String password, HttpSession session) {
         Member loginMember = memberRepository.findMemberByEmailOrElseThrow(email);
 
-        if (!loginMember.getPassword().equals(password)) {
+        if (!passwordEncoder.matches(password, loginMember.getPassword())) {
             throw new InvalidPasswordException();
         }
 
