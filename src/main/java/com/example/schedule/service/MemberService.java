@@ -23,14 +23,17 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final AuthService authService;
 
+    @Transactional
     public SignUpResponseDto signUp(String name, String email, String password) {
         if (memberRepository.existsByEmail(email)) {
             throw new DuplicateEmailException(email);
         }
+
         String encodePassword = passwordEncoder.encode(password);
         Member member = new Member(name, email, encodePassword);
 
         Member savedMember = memberRepository.save(member);
+
         return new SignUpResponseDto(
                 savedMember.getId(),
                 savedMember.getName(),
@@ -38,12 +41,13 @@ public class MemberService {
         );
     }
 
+    @Transactional(readOnly = true)
     public Page<MemberResponseDto> getMembers(Pageable pageable) {
-
         return memberRepository.findAll(pageable)
                 .map(MemberResponseDto::toDto);
     }
 
+    @Transactional(readOnly = true)
     public MemberResponseDto getMemberById(Long id) {
         Member findMember = memberRepository.findByIdOrElseThrow(id);
 
@@ -54,18 +58,23 @@ public class MemberService {
     public MemberResponseDto updateMember(MemberUpdateRequestDto requestDto, HttpSession session) {
         Long loggedInMemberId = authService.getLoggedInMemberId(session);
         Member findMember = memberRepository.findByIdOrElseThrow(loggedInMemberId);
+
         if (!passwordEncoder.matches(requestDto.getPassword(), findMember.getPassword())) {
             throw new InvalidPasswordException();
         }
 
         findMember.updateMember(requestDto.getName());
+
         Member updatedMember = memberRepository.findByIdOrElseThrow(loggedInMemberId);
+
         return MemberResponseDto.toDto(updatedMember);
     }
 
+    @Transactional
     public void deleteMember(HttpSession session) {
         Long loggedInMemberId = authService.getLoggedInMemberId(session);
         Member findMember = memberRepository.findByIdOrElseThrow(loggedInMemberId);
+
         memberRepository.delete(findMember);
 
         authService.logout(session);
@@ -75,10 +84,13 @@ public class MemberService {
     public void updatePassword(String oldPassword, String newPassword, HttpSession session) {
         Long loggedInMemberId = authService.getLoggedInMemberId(session);
         Member findMember = memberRepository.findByIdOrElseThrow(loggedInMemberId);
+
         if (!passwordEncoder.matches(oldPassword, findMember.getPassword())) {
             throw new InvalidPasswordException();
         }
+
         String encodePassword = passwordEncoder.encode(newPassword);
+
         findMember.updatePassword(encodePassword);
     }
 }

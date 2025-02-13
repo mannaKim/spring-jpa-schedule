@@ -10,6 +10,7 @@ import com.example.schedule.repository.MemberRepository;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +19,7 @@ public class AuthService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional(readOnly = true)
     public LoginResponseDto login(String email, String password, HttpSession session) {
         Member loginMember = memberRepository.findMemberByEmailOrElseThrow(email);
 
@@ -28,21 +30,25 @@ public class AuthService {
         session.setAttribute(Const.LOGIN_MEMBER, loginMember.getId());
 
         return new LoginResponseDto(
-                loginMember.getId(), loginMember.getName(), loginMember.getEmail()
+                loginMember.getId(),
+                loginMember.getName(),
+                loginMember.getEmail()
         );
     }
 
     public void logout(HttpSession session) {
-        if(session != null) {
+        if (session != null) {
             session.invalidate();
         }
     }
 
     public Long getLoggedInMemberId(HttpSession session) {
         Long memberId = (Long) session.getAttribute(Const.LOGIN_MEMBER);
+
         if (memberId == null) {
             throw new UnauthenticatedException();
         }
+
         return memberId;
     }
 }

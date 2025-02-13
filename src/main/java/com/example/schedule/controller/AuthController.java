@@ -25,9 +25,10 @@ public class AuthController {
             HttpSession session
     ) {
         LoginResponseDto loginResponseDto = authService.login(
-                requestDto.getEmail(), requestDto.getPassword(), session
+                requestDto.getEmail(),
+                requestDto.getPassword(),
+                session
         );
-
         return new ResponseEntity<>(loginResponseDto, HttpStatus.OK);
     }
 

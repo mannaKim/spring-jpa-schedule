@@ -26,5 +26,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     Page<CommentDetailResponseDto> findComments(
             @Param("title") String title,
             @Param("name") String name,
-            Pageable pageable);
+            Pageable pageable
+    );
 }
