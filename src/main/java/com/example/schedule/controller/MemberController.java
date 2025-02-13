@@ -24,9 +24,10 @@ public class MemberController {
     @PostMapping("/sign-up")
     public ResponseEntity<SignUpResponseDto> signUp(@Valid @RequestBody SignUpRequestDto requestDto) {
         SignUpResponseDto signUpResponseDto = memberService.signUp(
-                requestDto.getName(), requestDto.getEmail(), requestDto.getPassword()
+                requestDto.getName(),
+                requestDto.getEmail(),
+                requestDto.getPassword()
         );
-
         return new ResponseEntity<>(signUpResponseDto, HttpStatus.CREATED);
     }
 
@@ -36,6 +37,7 @@ public class MemberController {
     ) {
         Page<MemberResponseDto> memberPage = memberService.getMembers(pageable);
         PaginationResponse<MemberResponseDto> memberPageResponse = new PaginationResponse<>(memberPage);
+
         return new ResponseEntity<>(memberPageResponse, HttpStatus.OK);
     }
 
@@ -61,8 +63,11 @@ public class MemberController {
             @Valid @RequestBody MemberPasswordRequestDto requestDto,
             HttpSession session
     ) {
-        memberService.updatePassword(requestDto.getOldPassword(), requestDto.getNewPassword(), session);
-
+        memberService.updatePassword(
+                requestDto.getOldPassword(),
+                requestDto.getNewPassword(),
+                session
+        );
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

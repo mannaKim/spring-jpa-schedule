@@ -35,11 +35,11 @@ public class CommentService {
         comment.setSchedule(findSchedule);
 
         Comment savedComment = commentRepository.save(comment);
+
         return CommentResponseDto.toDto(savedComment);
     }
 
     public Page<CommentDetailResponseDto> getComments(String title, String name, Pageable pageable) {
-
         return commentRepository.findComments(title, name, pageable);
     }
 
@@ -53,21 +53,26 @@ public class CommentService {
     public CommentResponseDto updateComment(Long id, String contents, HttpSession session) {
         Long loggedInMemberId = authService.getLoggedInMemberId(session);
         Comment findComment = commentRepository.findByIdOrElseThrow(id);
+
         if (!findComment.getMember().getId().equals(loggedInMemberId)) {
             throw new UnauthorizedException("본인이 작성한 댓글만 수정할 수 있습니다.");
         }
 
         findComment.updateComment(contents);
+
         Comment updatedComment = commentRepository.findByIdOrElseThrow(id);
+
         return CommentResponseDto.toDto(updatedComment);
     }
 
     public void deleteComment(Long id, HttpSession session) {
         Long loggedInMemberId = authService.getLoggedInMemberId(session);
         Comment findComment = commentRepository.findByIdOrElseThrow(id);
+
         if (!findComment.getMember().getId().equals(loggedInMemberId)) {
             throw new UnauthorizedException("본인이 작성한 댓글만 삭제할 수 있습니다.");
         }
+
         commentRepository.delete(findComment);
     }
 }

@@ -28,21 +28,25 @@ public class AuthService {
         session.setAttribute(Const.LOGIN_MEMBER, loginMember.getId());
 
         return new LoginResponseDto(
-                loginMember.getId(), loginMember.getName(), loginMember.getEmail()
+                loginMember.getId(),
+                loginMember.getName(),
+                loginMember.getEmail()
         );
     }
 
     public void logout(HttpSession session) {
-        if(session != null) {
+        if (session != null) {
             session.invalidate();
         }
     }
 
     public Long getLoggedInMemberId(HttpSession session) {
         Long memberId = (Long) session.getAttribute(Const.LOGIN_MEMBER);
+
         if (memberId == null) {
             throw new UnauthenticatedException();
         }
+
         return memberId;
     }
 }

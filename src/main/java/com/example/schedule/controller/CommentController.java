@@ -49,6 +49,7 @@ public class CommentController {
                 pageable
         );
         PaginationResponse<CommentDetailResponseDto> commentPageResponse = new PaginationResponse<>(commentPage);
+
         return new ResponseEntity<>(commentPageResponse, HttpStatus.OK);
     }
 
@@ -65,8 +66,11 @@ public class CommentController {
             @RequestBody CommentUpdateRequestDto requestDto,
             HttpSession session
     ) {
-        CommentResponseDto commentResponseDto = commentService.updateComment(id, requestDto.getContents(), session);
-
+        CommentResponseDto commentResponseDto = commentService.updateComment(
+                id,
+                requestDto.getContents(),
+                session
+        );
         return new ResponseEntity<>(commentResponseDto, HttpStatus.OK);
     }
 

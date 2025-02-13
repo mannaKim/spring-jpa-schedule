@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 public class MemberResponseDto {
-
     private final Long id;
 
     private final String name;

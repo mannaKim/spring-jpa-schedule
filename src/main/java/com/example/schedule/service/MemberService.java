@@ -27,10 +27,12 @@ public class MemberService {
         if (memberRepository.existsByEmail(email)) {
             throw new DuplicateEmailException(email);
         }
+
         String encodePassword = passwordEncoder.encode(password);
         Member member = new Member(name, email, encodePassword);
 
         Member savedMember = memberRepository.save(member);
+
         return new SignUpResponseDto(
                 savedMember.getId(),
                 savedMember.getName(),
@@ -39,7 +41,6 @@ public class MemberService {
     }
 
     public Page<MemberResponseDto> getMembers(Pageable pageable) {
-
         return memberRepository.findAll(pageable)
                 .map(MemberResponseDto::toDto);
     }
@@ -54,18 +55,22 @@ public class MemberService {
     public MemberResponseDto updateMember(MemberUpdateRequestDto requestDto, HttpSession session) {
         Long loggedInMemberId = authService.getLoggedInMemberId(session);
         Member findMember = memberRepository.findByIdOrElseThrow(loggedInMemberId);
+
         if (!passwordEncoder.matches(requestDto.getPassword(), findMember.getPassword())) {
             throw new InvalidPasswordException();
         }
 
         findMember.updateMember(requestDto.getName());
+
         Member updatedMember = memberRepository.findByIdOrElseThrow(loggedInMemberId);
+
         return MemberResponseDto.toDto(updatedMember);
     }
 
     public void deleteMember(HttpSession session) {
         Long loggedInMemberId = authService.getLoggedInMemberId(session);
         Member findMember = memberRepository.findByIdOrElseThrow(loggedInMemberId);
+
         memberRepository.delete(findMember);
 
         authService.logout(session);
@@ -75,10 +80,13 @@ public class MemberService {
     public void updatePassword(String oldPassword, String newPassword, HttpSession session) {
         Long loggedInMemberId = authService.getLoggedInMemberId(session);
         Member findMember = memberRepository.findByIdOrElseThrow(loggedInMemberId);
+
         if (!passwordEncoder.matches(oldPassword, findMember.getPassword())) {
             throw new InvalidPasswordException();
         }
+
         String encodePassword = passwordEncoder.encode(newPassword);
+
         findMember.updatePassword(encodePassword);
     }
 }

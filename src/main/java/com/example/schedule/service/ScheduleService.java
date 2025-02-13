@@ -36,8 +36,12 @@ public class ScheduleService {
     }
 
     public Page<ScheduleDetailResponseDto> getSchedules(String title, String name, String updatedAt, Pageable pageable) {
-
-        return scheduleRepository.findAllWithCommentCount(title, name, updatedAt, pageable);
+        return scheduleRepository.findAllWithCommentCount(
+                title,
+                name,
+                updatedAt,
+                pageable
+        );
     }
 
     public ScheduleDetailResponseDto getScheduleById(Long id) {
@@ -48,21 +52,26 @@ public class ScheduleService {
     public ScheduleResponseDto updateSchedule(Long id, ScheduleUpdateRequestDto requestDto, HttpSession session) {
         Long loggedInMemberId = authService.getLoggedInMemberId(session);
         Schedule findSchedule = scheduleRepository.findByIdOrElseThrow(id);
+
         if (!findSchedule.getMember().getId().equals(loggedInMemberId)) {
             throw new UnauthorizedException("본인이 작성한 일정만 수정할 수 있습니다.");
         }
 
         findSchedule.updateSchedule(requestDto.getTitle(), requestDto.getContents());
+
         Schedule updatedSchedule = scheduleRepository.findByIdOrElseThrow(id);
+
         return ScheduleResponseDto.toDto(updatedSchedule);
     }
 
     public void deleteSchedule(Long id, HttpSession session) {
         Long loggedInMemberId = authService.getLoggedInMemberId(session);
         Schedule findSchedule = scheduleRepository.findByIdOrElseThrow(id);
+
         if (!findSchedule.getMember().getId().equals(loggedInMemberId)) {
             throw new UnauthorizedException("본인이 작성한 일정만 삭제할 수 있습니다.");
         }
+
         scheduleRepository.delete(findSchedule);
     }
 }

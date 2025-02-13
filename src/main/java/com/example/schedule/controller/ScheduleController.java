@@ -35,7 +35,6 @@ public class ScheduleController {
                 requestDto.getContents(),
                 session
         );
-
         return new ResponseEntity<>(scheduleResponseDto, HttpStatus.CREATED);
     }
 
@@ -53,6 +52,7 @@ public class ScheduleController {
                 pageable
         );
         PaginationResponse<ScheduleDetailResponseDto> schedulePageResponse = new PaginationResponse<>(schedulePage);
+
         return new ResponseEntity<>(schedulePageResponse, HttpStatus.OK);
     }
 
@@ -69,8 +69,11 @@ public class ScheduleController {
             @RequestBody ScheduleUpdateRequestDto requestDto,
             HttpSession session
     ) {
-        ScheduleResponseDto scheduleResponseDto = scheduleService.updateSchedule(id, requestDto, session);
-
+        ScheduleResponseDto scheduleResponseDto = scheduleService.updateSchedule(
+                id,
+                requestDto,
+                session
+        );
         return new ResponseEntity<>(scheduleResponseDto, HttpStatus.OK);
     }
 
