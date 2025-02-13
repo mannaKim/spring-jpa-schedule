@@ -23,6 +23,7 @@ public class ScheduleService {
     private final MemberRepository memberRepository;
     private final AuthService authService;
 
+    @Transactional
     public ScheduleResponseDto createSchedule(String title, String contents, HttpSession session) {
         Long loggedInMemberId = authService.getLoggedInMemberId(session);
         Member findMember = memberRepository.findByIdOrElseThrow(loggedInMemberId);
@@ -35,6 +36,7 @@ public class ScheduleService {
         return ScheduleResponseDto.toDto(savedSchedule);
     }
 
+    @Transactional(readOnly = true)
     public Page<ScheduleDetailResponseDto> getSchedules(String title, String name, String updatedAt, Pageable pageable) {
         return scheduleRepository.findAllWithCommentCount(
                 title,
@@ -44,6 +46,7 @@ public class ScheduleService {
         );
     }
 
+    @Transactional(readOnly = true)
     public ScheduleDetailResponseDto getScheduleById(Long id) {
         return scheduleRepository.findByIdWithCommentCountOrElseThrow(id);
     }
@@ -64,6 +67,7 @@ public class ScheduleService {
         return ScheduleResponseDto.toDto(updatedSchedule);
     }
 
+    @Transactional
     public void deleteSchedule(Long id, HttpSession session) {
         Long loggedInMemberId = authService.getLoggedInMemberId(session);
         Schedule findSchedule = scheduleRepository.findByIdOrElseThrow(id);

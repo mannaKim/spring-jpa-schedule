@@ -23,6 +23,7 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final AuthService authService;
 
+    @Transactional
     public SignUpResponseDto signUp(String name, String email, String password) {
         if (memberRepository.existsByEmail(email)) {
             throw new DuplicateEmailException(email);
@@ -40,11 +41,13 @@ public class MemberService {
         );
     }
 
+    @Transactional(readOnly = true)
     public Page<MemberResponseDto> getMembers(Pageable pageable) {
         return memberRepository.findAll(pageable)
                 .map(MemberResponseDto::toDto);
     }
 
+    @Transactional(readOnly = true)
     public MemberResponseDto getMemberById(Long id) {
         Member findMember = memberRepository.findByIdOrElseThrow(id);
 
@@ -67,6 +70,7 @@ public class MemberService {
         return MemberResponseDto.toDto(updatedMember);
     }
 
+    @Transactional
     public void deleteMember(HttpSession session) {
         Long loggedInMemberId = authService.getLoggedInMemberId(session);
         Member findMember = memberRepository.findByIdOrElseThrow(loggedInMemberId);

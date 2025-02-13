@@ -25,6 +25,7 @@ public class CommentService {
     private final ScheduleRepository scheduleRepository;
     private final AuthService authService;
 
+    @Transactional
     public CommentResponseDto createComment(String contents, Long scheduleId, HttpSession session) {
         Long loggedInMemberId = authService.getLoggedInMemberId(session);
         Member findMember = memberRepository.findByIdOrElseThrow(loggedInMemberId);
@@ -39,10 +40,12 @@ public class CommentService {
         return CommentResponseDto.toDto(savedComment);
     }
 
+    @Transactional(readOnly = true)
     public Page<CommentDetailResponseDto> getComments(String title, String name, Pageable pageable) {
         return commentRepository.findComments(title, name, pageable);
     }
 
+    @Transactional(readOnly = true)
     public CommentDetailResponseDto getCommentById(Long id) {
         Comment findComment = commentRepository.findByIdOrElseThrow(id);
 
@@ -65,6 +68,7 @@ public class CommentService {
         return CommentResponseDto.toDto(updatedComment);
     }
 
+    @Transactional
     public void deleteComment(Long id, HttpSession session) {
         Long loggedInMemberId = authService.getLoggedInMemberId(session);
         Comment findComment = commentRepository.findByIdOrElseThrow(id);
