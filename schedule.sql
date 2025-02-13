@@ -1,19 +1,35 @@
 CREATE TABLE member
 (
-    id          BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '작성자 식별자',
-    name        VARCHAR(100) NOT NULL COMMENT '유저명',
-    email       VARCHAR(100) NOT NULL COMMENT '이메일',
-    created_at  DATETIME COMMENT '작성일',
-    updated_at  DATETIME COMMENT '수정일'
+    id         BIGINT      NOT NULL AUTO_INCREMENT,
+    name       VARCHAR(10) NOT NULL,
+    email      VARCHAR(50) NOT NULL UNIQUE,
+    password   VARCHAR(60) NOT NULL,
+    created_at DATETIME(6) NULL,
+    updated_at DATETIME(6) NULL,
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE schedule
 (
-    id          BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '일정 식별자',
-    member_id   BIGINT COMMENT '멤버 식별자',
-    title       VARCHAR(200) NOT NULL COMMENT '할일 제목',
-    contents    VARCHAR(200) NOT NULL COMMENT '할일 내용',
-    created_at  DATETIME COMMENT '작성일',
-    updated_at  DATETIME COMMENT '수정일',
-    FOREIGN KEY (member_id) REFERENCES member(id)
+    id         BIGINT       NOT NULL AUTO_INCREMENT,
+    member_id  BIGINT       NULL,
+    title      VARCHAR(100) NOT NULL,
+    contents   VARCHAR(500) NOT NULL,
+    created_at DATETIME(6)  NULL,
+    updated_at DATETIME(6)  NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (member_id) REFERENCES member (id) ON DELETE CASCADE
+);
+
+CREATE TABLE comment
+(
+    id          BIGINT       NOT NULL AUTO_INCREMENT,
+    member_id   BIGINT       NULL,
+    schedule_id BIGINT       NULL,
+    contents    VARCHAR(200) NOT NULL,
+    created_at  DATETIME(6)  NULL,
+    updated_at  DATETIME(6)  NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (member_id) REFERENCES member (id) ON DELETE CASCADE,
+    FOREIGN KEY (schedule_id) REFERENCES schedule (id) ON DELETE CASCADE
 );
